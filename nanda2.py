@@ -8,6 +8,7 @@ import profile
 from xml.dom.minidom import parse
 from datetime import date, timedelta
 
+// What is rv?
 rvlimit = 400
 rvend = '20121231'
 rvstart = '20010101'
