@@ -8,16 +8,21 @@ import profile
 from xml.dom.minidom import parse
 from datetime import date, timedelta
 
-// What is rv?
+# TODO: Who the hell wrote this code? It irks me deeply. - CP
+# TODO: Rewrite your own model, copy from this source, learn more - CP
+
 rvlimit = 400
 rvend = '20121231'
 rvstart = '20010101'
+
+# TODO: Do this write, and test it works - CP
 d = date(int(rvend[:4]), 12, 31)
 ds = date(int(rvstart[:4]), 01, 01)
 date1 = d
 
 def main():
     
+    # TODO: This really bugs me. - CP
     global date1
     global rvend
     global rvstart
@@ -188,6 +193,8 @@ def parse_talk(**attributes):
         for project in projects:
             parse_wikiproject(project)
     
+# TODO: Sanitize SQL entries - CP
+# TODO: 
 def sql(values, type):
     
     #SQL Ju-Ju
