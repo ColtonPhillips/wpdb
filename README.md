@@ -1,4 +1,4 @@
 wpdb
 ====
 
-Contract work for Pascal Courty
+-Contract work for Pascal Courty
