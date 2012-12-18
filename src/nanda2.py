@@ -50,6 +50,10 @@ def main():
             print "date is %s" % (date1)
             time.sleep(5)
             rvend = ''.join(str(date1).split('-'))
+            
+            file = open("temp.txt", "w")
+            file.write(str(xml))
+            file.close()
 
         date1 = d
         rvend = ''.join(str(d).split('-'))
@@ -200,10 +204,10 @@ def sql(values, type):
     #SQL Ju-Ju
     try:
         conn = MySQLdb.connect(
-                    host = "localhost",
+                    host = "127.0.0.1",
                     user = "root",
-                    passwd = "passsword",
-                    db = "wiki")
+                    passwd = "dangermouse",
+                    db = "wpdb")
     except MySQLdb.Error, e:
         print("%s") % e
         exit(1)
