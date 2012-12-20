@@ -5,30 +5,31 @@ import re
 import time
 import profile
 
+# what information should I be logging to the user? - CP
+
 from xml.dom.minidom import parse
 from datetime import date, timedelta
 
-# TODO: Who the hell wrote this code? It irks me deeply. - CP
-# TODO: Rewrite your own model, copy from this source, learn more - CP
-
+# TODO: Isn't the rv limit set by params passing to the program? Not hard coded? - CP
 rvlimit = 400
 rvend = '20121231'
 rvstart = '20010101'
 
-# TODO: Do this write, and test it works - CP
+# TODO: Do this right, and test it works - CP
 d = date(int(rvend[:4]), 12, 31)
 ds = date(int(rvstart[:4]), 01, 01)
 date1 = d
 
 def main():
     
-    # TODO: This really bugs me. - CP
+    # TODO: This really irks me. Putting in a class? - CP
     global date1
     global rvend
     global rvstart
     global ds
     global d
         
+    #TODO: We don't really want to read a list we want to randomly gen. on the fly - CP
     #Read list
     if len(sys.argv) > 1:
         f = open(sys.argv[1], "r")
@@ -57,6 +58,8 @@ def main():
 
         date1 = d
         rvend = ''.join(str(d).split('-'))
+    
+    # TODO: Looks like talk pages must be done in seperate query. shit son. - CP
     
     #Request and parse XML for talk page
 #    print "[*] time to talk baby!\n"
@@ -92,6 +95,7 @@ def parse_xml(xml, talk=False):
         date1 = ds - timedelta(days=1)
         return 0
     
+    #TODO: This could be made more clear and consise whats going on here probably... - CP
     for attribute in page.attributes.keys():
         attributes[attribute] = page.attributes[attribute].value.encode('ascii', 'ignore')\
 				.replace("\\", "\\\\").replace("'", "\\'")
