@@ -1,5 +1,5 @@
 # I'll just use this one for testing - CP
-# You can use a my_conv and pass that into the connect to auto convert some types - CP
+# You can use a my_conv dict and pass that into the connect to auto convert some types - CP
 
 import MySQLdb
 import sys

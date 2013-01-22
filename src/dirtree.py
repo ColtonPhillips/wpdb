@@ -2,7 +2,7 @@ import string
 
 #It irks me greatly how my dir is just as useless as dir right now. sasuke it all away.
 
-def __dirt_recurse__(module, verbose=False, file=False, tab_width=0):
+def _dirt_recurse(module, verbose=False, file=False, tab_width=0):
     list = dir(module)
     if file:
         # TODO: put that shit in a file
@@ -20,4 +20,4 @@ def __dirt_recurse__(module, verbose=False, file=False, tab_width=0):
                 #   __dirt_recurse__(item,verbose,file,tab_width+1)
                  
 def dirt(module, verbose=False, file=False):
-    __dirt_recurse__(module, verbose, file)
+    _dirt_recurse(module, verbose, file)
