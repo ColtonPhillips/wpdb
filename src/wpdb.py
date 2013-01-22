@@ -10,7 +10,6 @@
 
 import MySQLdb
 import sys
-from dirtree import dirt
 
 def connect_to_database():
     try:
@@ -27,7 +26,6 @@ def connect_to_database():
 
 def main():
     db = connect_to_database()
-    dirt(db)
 
 if __name__ == "__main__":
     main()
