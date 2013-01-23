@@ -1,13 +1,3 @@
-# TODO: Copy over code from nanda2.py - CP
-# TODO: Which modules will you need to create? - CP
-# TODO: What is the console interface?
-# TODO: Password is in plain-text - CP
-# TODO: Perhaps a debug mode that uses a Profiler - CP
-# TODO: I'll likely have a few modules accessing same sql database (e.g. an init script) so maybe
-#		There should be one  module they all import to access the database or something - CP
-
-# one hour git setup files. created dirtree helper module
-
 import MySQLdb
 import sys
 
@@ -26,6 +16,12 @@ def connect_to_database():
 
 def main():
     db = connect_to_database()
+    
+    # Create our database
+    init_query = """ 
+		DROP TABLE IF EXISTS test_table;
+		"""	
+    db.query(init_query)
 
 if __name__ == "__main__":
     main()
