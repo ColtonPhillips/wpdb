@@ -1,4 +1,4 @@
-import sys
+import sys 
 import MySQLdb
 import urllib
 import re
@@ -16,9 +16,9 @@ rvend = '20121231'
 rvstart = '20010101'
 
 # TODO: Do this right, and test it works - CP
-d = date(int(rvend[:4]), 12, 31)
+end_rev_date= date(int(rvend[:4]), 12, 31)
 ds = date(int(rvstart[:4]), 01, 01)
-date1 = d
+date1 = end_rev_date
 
 def main():
     
@@ -27,9 +27,10 @@ def main():
     global rvend
     global rvstart
     global ds
-    global d
+    global end_rev_date
         
     #TODO: We don't really want to read a list we want to randomly gen. on the fly - CP
+	#TOD: Reading the list might as well be a function - CP
     #Read list
     if len(sys.argv) > 1:
         f = open(sys.argv[1], "r")
@@ -52,12 +53,12 @@ def main():
             time.sleep(5)
             rvend = ''.join(str(date1).split('-'))
             
-            file = open("temp.txt", "w")
-            file.write(str(xml))
-            file.close()
+            #file = open("temp.txt", "w")
+            #file.write(str(xml))
+            #file.close()
 
-        date1 = d
-        rvend = ''.join(str(d).split('-'))
+        date1 = end_rev_date
+        rvend = ''.join(str(end_rev_date).split('-'))
     
     # TODO: Looks like talk pages must be done in seperate query. shit son. - CP
     
@@ -81,7 +82,7 @@ def main():
         
 def parse_xml(xml, talk=False):
     
-    global date1, d, ds, rvend
+    global date1, end_rev_date, ds, rvend
     
     pxml = parse(xml)
     page = pxml.getElementsByTagName('page')[0]
@@ -101,7 +102,7 @@ def parse_xml(xml, talk=False):
 				.replace("\\", "\\\\").replace("'", "\\'")
     title = attributes['title']
     
-    if date1 == d:
+    if date1 == end_rev_date:
         sql(attributes, 'pages')        
         for element in protection:
             for attribute in element.attributes.keys():
