@@ -1,6 +1,10 @@
 wpdb
 ====
 
-This should really just explain what this project is. I made a new Issue with the suggested tasks. You
-should put something better in this read me.
--LG
+wpdb stands for Wikipedia Database. This is an ongoing research project system that will...
+
+* Generate a list of Wikipedia article ids via a random or pseudorandom procedure.
+  * To be accepted the article must be available in 2 of the 6 target languages.
+* Query the WikiMedia API for each id, for each language.
+  * Metadata in the form of XML will be parsed and cleaned.
+* Place clean data in the wpdb database.
