@@ -6,22 +6,19 @@
 QUEST = """I want to run your script and take my list of articles
 to generate a CSV file populated with the properties I have given you."""
 
+# TODO We gotta get all the good stuff that pascal likes :3 DATA! DO YOU READ ME?
 
 def parse_args():
     import sys
     return sys.argv[1]
-
-# TODO: This is pre-baked. How do we get the flexibility we need? - CP
-# TODO: Is there really no way to put those unary operations on new lines? - CP
-def make_url(language, title, ):
-    url = "http://" + language + ".wikipedia.org/w/api.php?action=query&format=xmlfm&titles=" + title + "&prop=info|revisions|categories&inprop=protection|url|readable|subjectid|watched&rvprop=userid|ids|timestamp|user|flags|comment|size"
-    return url
     
 def yield_xml(dummy):
     import urllib
+    import wikiurl
     
     for title in dummy:
-        url = make_url('en', title)
+
+        url = wikiurl.make_url('en', title)
         xml = urllib.urlopen(url)
     
         out_file = title + ".xml"
@@ -36,8 +33,8 @@ def user_story():
         dummy = dummy.generate_dummy_from_file(dummy_file)
         yield_xml(dummy)
     
-    except Error, e:
-            print("%s") % e
+    except Exception, e:
+            print(type(e), "%s") % e
             return False
     
     return True

@@ -10,18 +10,14 @@ within wikipedia"""                                 # Pascal Courty
 def parse_args():
     import sys
     return sys.argv[1]
-
-# TODO: This is pre-baked. How do we get the flexibility we need? - CP
-# TODO: Is there really no way to put those unary operations on new lines? - CP
-def make_url(language, title, ):
-    url = "http://" + language + ".wikipedia.org/w/api.php?action=query&format=xmlfm&titles=" + title + "&prop=info|revisions|categories&inprop=protection|url|readable|subjectid|watched&rvprop=userid|ids|timestamp|user|flags|comment|size"
-    return url
     
 def yield_xml(dummy):
     import urllib
     
     for title in dummy:
-        url = make_url('en', title)
+        import wikiurl
+
+        url = wikiurl.make_url('en', title)
         xml = urllib.urlopen(url)
     
         out_file = title + ".xml"
@@ -31,12 +27,12 @@ def yield_xml(dummy):
     
 def user_story():
     try:        
-        dummy_file = parse_args()
         import dummy
+        dummy_file = parse_args()
         dummy = dummy.generate_dummy_from_file(dummy_file)
         yield_xml(dummy)
     
-    except Error, e:
+    except Exception, e:
             print("%s") % e
             return False
     
