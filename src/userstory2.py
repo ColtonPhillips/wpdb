@@ -12,32 +12,20 @@ def parse_args():
     import sys
     return sys.argv[1]
     
-def yield_xml(dummy):
-    import urllib
-    import wikiurl
-    
-    for title in dummy:
-
-        url = wikiurl.make_url('en', title)
-        xml = urllib.urlopen(url)
-    
-        out_file = title + ".xml"
-        file = open(out_file, "w")
-        file.write(str(xml.read()))
-        file.close()
-    
 def user_story():
     try:        
         import dummy
+        import debug
+
         dummy_file = parse_args()
         dummy = dummy.generate_dummy_from_file(dummy_file)
-        yield_xml(dummy)
+        debug.yield_xml(dummy)
     
     except Exception, e:
             print(type(e), "%s") % e
             return False
     
-    return True
+    return False
 
 
 def main():
