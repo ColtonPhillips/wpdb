@@ -16,7 +16,7 @@ def parse_args():
 def user_story():
     try:   
         dummy_file = parse_args()
-        dummy = wpdb.debug.generate_dummy_from_file(dummy_file)
+        dummy = wpdb.wpdb.debug.generate_dummy_from_file(dummy_file)
         wpdb.debug.make_dummy_xml_files(dummy, "dummy_output.xml")
     
     except Exception, e:
