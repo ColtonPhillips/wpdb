@@ -1,5 +1,5 @@
 # This is a user story hack jam by Colton Phillips for Pascal Courty.
-# The location is Coltons basement
+# The location is Colton's basement
 # MAR 1 2013
 
 # A User story is a
@@ -15,14 +15,10 @@ def parse_args():
 def user_story():
     try:        
         dummy_file, props_file = parse_args()
-        dummy = wpdb.debug.generate_dummy_from_file(dummy_file)
-
         wf = wpdb.wikiurl.WikiFetcher(dummy_file, props_file)
-
         wf.title = "Dance"
         wf.post()
         wpdb.debug.dummy_xml_to_csv(wf.xml)
-        wpdb.debug.xml_to_file(wf.xml, "shmoutput.xml")
     
     except Exception, e:
             print str(e)

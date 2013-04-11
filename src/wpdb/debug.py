@@ -1,13 +1,8 @@
-# Colton uses these things to do debugs and prints.
-# Some of these things should probably be moved into their modules when appropriate.
+""" WPDB Debug facilities
+    Some of these things should probably be moved into other modules when appropriate.
+"""
 
-def xml_to_file(xml, file_path):
-    """
-    Given an xml string and an absolute path, save the xml to the file.
-    """
-    with open(file_path, 'w') as file:
-        file.write(str(xml.read()))
-
+# 
 # Created for User Story #1
 def make_dummy_xml_files(dummy, file_path):
     import urllib
@@ -41,14 +36,23 @@ def make_dummy_url(language, title, ):
     #url += "&inprop=protection|url|readable|subjectid|watched" # info properties
     #url += "&rvprop=userid|ids|timestamp|user|flags|comment|size" # revision properties
     return url       
-        
+
+# Created for User Story #2
+def xml_to_file(xml, file_path):
+    """
+    Given an xml string and an absolute path, save the xml to the file.
+    """
+    with open(file_path, 'w') as file:
+        file.write(str(xml.read()))
+
+    
 # Created for User Story #2
 def dummy_xml_to_csv(xml):
     from bs4 import BeautifulSoup
     import csv
 
     soup = BeautifulSoup(xml)
-
+    print soup.prettify()
     with open ('output.csv', 'wb') as csvfile:
         my_writer = csv.writer(csvfile, delimiter=",",
                         quotechar='"', quoting=csv.QUOTE_MINIMAL)
