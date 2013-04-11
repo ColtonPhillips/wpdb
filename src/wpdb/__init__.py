@@ -1,5 +1,5 @@
 # from wpdb import * will import the following
-__all__ = ['wpdb', 'debug', 'wikiurl', 'dummy']
+__all__ = ['wpdb', 'debug', 'wikiurl']
 
 # importing wpdb imports all associated sub-modules as well
-import debug, wikiurl, dummy
+import debug, wikiurl
