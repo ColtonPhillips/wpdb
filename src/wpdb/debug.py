@@ -44,7 +44,6 @@ def xml_to_file(xml, file_path):
     """
     with open(file_path, 'w') as file:
         file.write(str(xml.read()))
-
     
 # Created for User Story #2
 def dummy_xml_to_csv(xml):
