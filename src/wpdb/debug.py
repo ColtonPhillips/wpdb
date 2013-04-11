@@ -1,5 +1,12 @@
 # Colton uses these things to do debugs and prints.
-# Some of these things should probably be moved into their classes when appropriate.
+# Some of these things should probably be moved into their modules when appropriate.
+
+def xml_to_file(xml, file_path):
+    """
+    Given an xml string and an absolute path, save the xml to the file.
+    """
+    with open(file_path, 'w') as file:
+        file.write(str(xml.read()))
 
 # Created for User Story #1
 def yield_xml(dummy):

@@ -25,13 +25,13 @@ def user_story():
         wf.title = "Dance"
         wf.post()
         debug.dummy_xml_to_csv(wf.xml)
+        debug.xml_to_file(wf.xml, "shmoutput.xml")
     
     except Exception, e:
             print str(e)
             return False
     
     return True
-
 
 def main():
     if (user_story() == False):
