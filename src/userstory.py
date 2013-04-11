@@ -7,18 +7,17 @@ QUEST = """I want to run your script and take my list of articles
 so I can make speculations about how people organize themselves
 within wikipedia"""                                 # Pascal Courty
 
+import wpdb
+
 def parse_args():
     import sys
     return sys.argv[1]
 
 def user_story():
-    try:        
-        import dummy
-        import debug
-
+    try:   
         dummy_file = parse_args()
-        dummy = dummy.generate_dummy_from_file(dummy_file)
-        debug.yield_xml(dummy)
+        dummy = wpdb.dummy.generate_dummy_from_file(dummy_file)
+        wpdb.debug.make_dummy_xml_files(dummy, "dummy_output.xml")
     
     except Exception, e:
             print("%s") % e
