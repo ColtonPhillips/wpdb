@@ -1,21 +1,43 @@
+import csv
+
 class WikiFetcher(object):
+    """
+    WikiFetcher makes querying wikipedia easier. A WikiFetcher is initialized with a set
+    of properties parsed from a csv file. The WikiFetcher must be initialized with a title
+    and a language to query.
+    
+    Once a WikiFetcher is primed, call post() to send the query. The WikiFetcher object will
+    hold a reference to the xml that is generated from the server.
+    
+    NOTE: It is assumed that for each wikimedia language specific database, a unique
+        query is formed, though the xml that is returned may need to be handled in a unique way.
+    """
 
-    def __init__(self, sample_file, props_file):
-        self.url = ""
-        self.language = "en"
-        self.title = "Dummy_data"
-
-        # e.g. ["prop=images|extlinks|categories|info", "inprop=protection"]
-        self.properties = []
-        
-        self.xml = ""
+    def __init__(self, props_file):
+        self.url = None
+        self.language = None
+        self.title = None
+        self.xml = None
+        self.properties = None
 
         self.construct_property_rows(props_file)
-        self.build_url()
-        return
 
     def construct_property_rows(self, props_file):
-        import csv
+        """
+        From a formatted csv file, set properties list.
+            Format:
+                property_1, value_1, ..., value_n
+                property_2, value_1, ..., value_m
+                    .
+                    .
+                    .
+                property_n, value_1, ..., value_z
+        
+            Side Effect e.g.:
+                properties = ["prop=images|extlinks|categories|info", "inprop=protection"]
+        
+        """
+        self.properties = []
         with open(props_file, 'rb') as csvfile:
             reader = csv.reader(csvfile, delimiter=',', quotechar='"')
             for row in reader:
@@ -29,9 +51,20 @@ class WikiFetcher(object):
                 row_string = row_string.replace('|', '=', 1)
 
                 self.properties.append(row_string)
-        return
 
-    def build_url(self):
+    def _build_url(self):
+        """
+        Builds url field before posting to Wikipedia. 
+        
+        Side Effect:
+            Sets url to properly formatted url based on input to WikiFetcher fields
+        """
+        if (self.language is None or self.title is None or self.properties is None):
+            # TODO: What type of exception would this throw?
+            print "WikiFetcher is not primed. Raises an exception, but for now it just crashes!"
+            import sys
+            sys.exit()
+        
         self.url = ""
         self.url += "http://"
         self.url += self.language 
@@ -43,38 +76,10 @@ class WikiFetcher(object):
         for prop in self.properties:
             self.url += "&" + prop
 
-        return
-
-
     def post(self):
-        self.build_url()
+        self._build_url()
 
         import urllib
         self.xml = urllib.urlopen(self.url)
 
         # TODO: This has to be recursively built using query-continue
-
-
-"""
-# a dang dummy function!
-def make_url(language, title, ):
-    url = ""
-    url += "http://"
-    url += language 
-    url += ".wikipedia.org/w/api.php?"
-    url += "action=query"
-    url += "&format=xml"
-    url += "&titles=" + title
-    url += "|Talk:" + title
-    #url += "&prop=info|revisions|categories|images"
-    url += "&prop=images|extlinks|categories|info"
-
-    url += "&inprop=protection"
-    ## THIS DOESN"T WORK. YOU CANT USE MULTIPLE PROPS
-    #url += "&prop=extlinks"
-    
-    #url += "&inprop=protection|url|readable|subjectid|watched" # info properties
-    #url += "&rvprop=userid|ids|timestamp|user|flags|comment|size" # revision properties
-    return url
-
-"""

@@ -10,11 +10,19 @@ import wpdb
 
 def parse_args():
     import sys
-    return sys.argv[1], sys.argv[2]
+    return (sys.argv[1], sys.argv[2])
     
 def user_story():
     try:        
-    
+       articles_file_path, property_file_path = parse_args()
+       articles = wpdb.csv_file_to_list(articles_file_path)
+       
+       wf = wpdb.wikiurl.WikiFetcher(property_file_path)
+       wf.title = "Dance"
+       wf.language = 'en'
+       wf.post()
+       print (wf.xml.read())
+       
     except Exception, e:
             print str(e)
             return False
