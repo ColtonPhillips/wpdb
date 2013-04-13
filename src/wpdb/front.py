@@ -15,12 +15,11 @@ class WikiFetcher(object):
         query is formed, though the xml that is returned may need to be handled in a unique way.
     """
 
-    def __init__(self, props_file):
-        self.url = None
-        self.language = None
-        self.title = None
+    def __init__(self, props_file, language=None, title=None):
         
-        # BUG This is an xml object type of deal and can only be read once.
+        self.language = language
+        self.title = title
+        self.url = None
         self.xml = None
         self.properties = None
 
@@ -45,13 +44,8 @@ class WikiFetcher(object):
         with open(props_file, 'rb') as csvfile:
             reader = csv.reader(csvfile, delimiter=',', quotechar='"')
             for row in reader:
-                # Create a string w list elements seperated by | symbols
                 row_string = '|'.join(row)
-
-                # Now remove all the spaces!
                 row_string = row_string.replace(' ', '')
-
-                # Then find the first | and replace it with =
                 row_string = row_string.replace('|', '=', 1)
 
                 self.properties.append(row_string)
