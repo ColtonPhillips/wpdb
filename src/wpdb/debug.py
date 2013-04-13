@@ -59,4 +59,3 @@ def dummy_xml_to_csv(xml):
         my_writer.writerow(["Article","# of images", "# of ext links"])
         # Lets just get some of the properties we want
         my_writer.writerow(['Dance', len(soup.images), len(soup.extlinks)])
- 

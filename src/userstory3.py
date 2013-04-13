@@ -21,7 +21,7 @@ def user_story():
        wf.title = "Dance"
        wf.language = 'en'
        wf.post()
-       print (wf.xml.read())
+       print (wf.xml)
        
     except Exception, e:
             print str(e)
