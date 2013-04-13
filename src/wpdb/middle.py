@@ -8,6 +8,7 @@ class Cruncher(object):
 	def __init__(self, xml=None):
 		self.xml = xml
 		self.crunches = []
+		self.csv = None
 
 	def addFunction(self, new_function):
 		"""
@@ -20,6 +21,11 @@ class Cruncher(object):
 		Add a list of functions to the crunch list
 		"""
 		self.crunches.extend(new_functions)
+
+	def crunch(self):
+		for fun in self.crunches:
+			self.release = fun(self.xml)
+
 
 	def to_csv_line(self):
 		print ''

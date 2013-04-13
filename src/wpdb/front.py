@@ -2,13 +2,13 @@ import csv
 import urllib
 import debug
         
-class WikiFetcher(object):
+class Fetcher(object):
     """
-    WikiFetcher makes querying wikipedia easier. A WikiFetcher is initialized with a set
-    of properties parsed from a csv file. The WikiFetcher must be initialized with a title
+    Fetcher makes querying wikipedia easier. A Fetcher is initialized with a set
+    of properties parsed from a csv file. The Fetcher must be initialized with a title
     and a language to query.
     
-    Once a WikiFetcher is primed, call post() to send the query. The WikiFetcher object will
+    Once a Fetcher is primed, call post() to send the query. The Fetcher object will
     hold a reference to the xml that is generated from the server.
     
     NOTE: It is assumed that for each wikimedia language specific database, a unique
@@ -55,11 +55,11 @@ class WikiFetcher(object):
         Builds url field before posting to Wikipedia. 
         
         Side Effect:
-            Sets url to properly formatted url based on input to WikiFetcher fields
+            Sets url to properly formatted url based on input to Fetcher fields
         """
         if (self.language is None or self.title is None or self.properties is None):
             # TODO: What type of exception would this throw?
-            print "WikiFetcher is not primed. Raises an exception, but for now it just crashes!"
+            print "Fetcher is not primed. Raises an exception, but for now it just crashes!"
             import sys
             sys.exit()
         
@@ -70,7 +70,7 @@ class WikiFetcher(object):
         self.url += "action=query"
         self.url += "&format=xml"
         self.url += "&titles=" + self.title
-
+        
         for prop in self.properties:
             self.url += "&" + prop
 
@@ -90,7 +90,7 @@ class WikiFetcher(object):
     def post(self):
         """
         Post is an atomic operation that builds a complete xml including all data that must be 
-        acquired via continue queries based on the primed WikiFetcher properties.
+        acquired via continue queries based on the primed Fetcher properties.
         
         Side Effects:
             xml is a complete description of the query in question
@@ -109,7 +109,7 @@ class WikiFetcher(object):
         
     def log(self, file_path=None):
         """
-        Log wikifetcher information. If no file_path is given, just print it.
+        Log Fetcher information. If no file_path is given, just print it.
         
         Gosh this code is gross.
         """

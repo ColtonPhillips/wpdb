@@ -8,21 +8,35 @@ of articles. The output must be formatted in a csv file for use with Stata softw
 
 import wpdb
 
+def test_crunch(xml):
+    print "bunkaiyyyy"
+
+userstory3_crunches = [test_crunch]
+
 def parse_args():
     import sys
     return (sys.argv[1], sys.argv[2])
-    
+ 
 def user_story():
     try:        
-       articles_file_path, property_file_path = parse_args()
-       articles = wpdb.csv_file_to_list(articles_file_path)
-       
-       wf = wpdb.wikiurl.WikiFetcher(property_file_path)
-       wf.title = "Dance"
-       wf.language = 'en'
-       wf.post()
-       print (wf.xml)
-       
+        articles_file_path, property_file_path = parse_args()
+    
+        articles = wpdb.csv_file_to_list(articles_file_path)
+        wf = wpdb.front.Fetcher(property_file_path)
+        articles_xml = []
+        for article in articles:
+            wf.title = article
+            wf.language = 'en'
+            wf.post()
+            articles_xml.append(wf.xml)
+
+        cr = wpdb.middle.Cruncher()
+        cr.addFunctions(userstory3_crunches)
+        for article_xml in articles_xml:
+            cr.xml = article_xml
+            cr.crunch() # calls all functions and puts results in a list
+            #print cr.result()
+
     except Exception, e:
             print str(e)
             return False
