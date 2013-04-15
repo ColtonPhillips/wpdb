@@ -19,20 +19,16 @@ def parse_args():
  
 def user_story():
     try:        
-        articles_file_path, property_file_path = parse_args()
-    
-        articles = wpdb.csv_file_to_list(articles_file_path)
-        wf = wpdb.front.Fetcher(property_file_path)
-        wf.language = 'en'
         articles_xml = []
-        print "Fetch articles"
+        articles_file_path, property_file_path = parse_args()
+        articles = wpdb.csv_file_to_list(articles_file_path)
         for article in articles:
-            print "Fetching: " + article 
-            wf.title = article
-            wf.post()
-            print "Done: " + article
-            print ""
+            wf = wpdb.front.Fetcher(property_file_path, article, 'en')
             articles_xml.append(wf.xml)
+
+            ###
+            wf.log("log/log.txt")
+            ###
 
         cr = wpdb.middle.Cruncher()
         cr.addFunctions(userstory3_crunches)
