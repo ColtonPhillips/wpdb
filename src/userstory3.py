@@ -8,10 +8,15 @@ of articles. The output must be formatted in a csv file for use with Stata softw
 
 import wpdb
 
-def test_crunch(xml):
-    print ""
+def xml_len(data):
+    xml = data['xml']
+    return "XML length: " + str(len(xml))
 
-userstory3_crunches = [test_crunch, test_crunch, test_crunch]
+def soup_len(data):
+    soup = data['soup']
+    return "Soup length: " + str(len(soup))
+
+userstory3_crunches = [soup_len,xml_len]
 
 def parse_args():
     import sys
@@ -25,18 +30,20 @@ def user_story():
         for article in articles:
             wf = wpdb.front.Fetcher(property_file_path, article, 'en')
             articles_xml.append(wf.xml)
-            wf.log('log/log.txt')
+            #wf.log('log/log.txt')
 
-        articles_csv = []
+        articles_result = []
         for article_xml in articles_xml:
-            cr = wpdb.middle.Cruncher(userstory3_crunches, articles_xml)
-            articles_csv.append(cr.csv)
+            cr = wpdb.middle.Cruncher(userstory3_crunches, article_xml)
+            articles_result.append(cr.result)
+
+        print articles_result
 
     except Exception, e:
             print str(e)
             return False
     
-    return False
+    return True
 
 def main():
     if (user_story() == False):

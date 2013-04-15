@@ -1,14 +1,22 @@
+from bs4 import BeautifulSoup
+import csv
+
 class Cruncher(object):
 	"""
 	A Cruncher has a list of functions that are used to analyze, 
 	compute, parse, the xml of the object, or otherwise do
-	any arbitrary calls. These functions return strings that are
-	used as the columns for the csv file
+	any arbitrary calls.
 	"""
 	def __init__(self, crunches=[], xml=None):
 		self.xml = xml
+		self.soup = BeautifulSoup(xml,'lxml')
 		self.crunches = crunches
-		self.csv = None
+		self.result = []
+
+		self.crunch_data = {
+				'xml': self.xml,
+				'soup': self.soup
+		}
 
 		self.crunch()
 
@@ -25,8 +33,6 @@ class Cruncher(object):
 		self.crunches.extend(new_functions)
 
 	def crunch(self):
+		self.result = []
 		for fun in self.crunches:
-			self.release = fun(self.xml)
-
-	def to_csv_line(self):
-		print ''
+			self.result.append(fun(self.crunch_data))
