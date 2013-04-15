@@ -5,10 +5,12 @@ class Cruncher(object):
 	any arbitrary calls. These functions return strings that are
 	used as the columns for the csv file
 	"""
-	def __init__(self, xml=None):
+	def __init__(self, crunches=[], xml=None):
 		self.xml = xml
-		self.crunches = []
+		self.crunches = crunches
 		self.csv = None
+
+		self.crunch()
 
 	def addFunction(self, new_function):
 		"""
@@ -25,7 +27,6 @@ class Cruncher(object):
 	def crunch(self):
 		for fun in self.crunches:
 			self.release = fun(self.xml)
-
 
 	def to_csv_line(self):
 		print ''

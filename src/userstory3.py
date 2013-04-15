@@ -11,7 +11,7 @@ import wpdb
 def test_crunch(xml):
     print ""
 
-userstory3_crunches = [test_crunch]
+userstory3_crunches = [test_crunch, test_crunch, test_crunch]
 
 def parse_args():
     import sys
@@ -25,17 +25,12 @@ def user_story():
         for article in articles:
             wf = wpdb.front.Fetcher(property_file_path, article, 'en')
             articles_xml.append(wf.xml)
+            wf.log('log/log.txt')
 
-            ###
-            wf.log("log/log.txt")
-            ###
-
-        cr = wpdb.middle.Cruncher()
-        cr.addFunctions(userstory3_crunches)
+        articles_csv = []
         for article_xml in articles_xml:
-            cr.xml = article_xml
-            cr.crunch() # calls all functions and puts results in a list
-            #print cr.result()
+            cr = wpdb.middle.Cruncher(userstory3_crunches, articles_xml)
+            articles_csv.append(cr.csv)
 
     except Exception, e:
             print str(e)
