@@ -9,7 +9,7 @@ of articles. The output must be formatted in a csv file for use with Stata softw
 import wpdb
 
 def test_crunch(xml):
-    print "bunkaiyyyy"
+    print ""
 
 userstory3_crunches = [test_crunch]
 
@@ -23,11 +23,15 @@ def user_story():
     
         articles = wpdb.csv_file_to_list(articles_file_path)
         wf = wpdb.front.Fetcher(property_file_path)
+        wf.language = 'en'
         articles_xml = []
+        print "Fetch articles"
         for article in articles:
+            print "Fetching: " + article 
             wf.title = article
-            wf.language = 'en'
             wf.post()
+            print "Done: " + article
+            print ""
             articles_xml.append(wf.xml)
 
         cr = wpdb.middle.Cruncher()
