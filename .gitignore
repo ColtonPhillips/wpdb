@@ -1,3 +1,4 @@
 *.pyc
 *.odt#
 */out/*
+*/log/*
