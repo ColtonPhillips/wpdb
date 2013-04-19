@@ -15,7 +15,8 @@ class Cruncher(object):
 
 		self.crunch_data = {
 				'xml': self.xml,
-				'soup': self.soup
+				'soup': self.soup,
+				'title': self.soup.find('page')['title']
 		}
 
 		self.crunch()
