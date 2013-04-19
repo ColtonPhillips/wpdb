@@ -1,4 +1,4 @@
-# TODO Maybe we want to be able to fetch articles via id, not just title
+import merge_xml
 import csv
 import urllib
 import debug
@@ -104,11 +104,13 @@ class Fetcher(object):
         acquired via continue queries.
         """
         working_xml = urllib.urlopen(self.url).read()
-        #working_soup = BeautifulSoup(working_xml,'lxml')
 
         while (self._has_continue_queries(working_xml)):
             new_xml = urllib.urlopen(self._continue_url(working_xml)).read()
-            working_xml = new_xml         
+            wang_xml = working_xml
+            merge_xml.xml_merge(working_xml, new_xml)
+            if (working_xml == wang_xml or working_xml ==new_xml):
+                print "borked"
 
         self.xml = working_xml
 
