@@ -1,3 +1,5 @@
+from pprint import pprint as pp
+
 # This is a user story hack jam by Colton Phillips for Pascal Courty.
 # The location is Colton's house
 # Apr 10 2013
@@ -16,7 +18,15 @@ def soup_len(data):
     soup = data['soup']
     return "Soup length: " + str(len(soup))
 
-userstory3_crunches = [soup_len,xml_len]
+def daily_views_last_month(data):
+    import urllib, re
+    website = urllib.urlopen("http://stats.grok.se/en/latest30/" + str(data['title'])).read()
+    pattern = r'(?<=viewed )\d*'
+    prog = re.compile(pattern)
+    match_object = prog.search(website)
+    return "Views in last month: " + str(match_object.group(0)) 
+
+userstory3_crunches = [soup_len,xml_len, daily_views_last_month]
 
 def parse_args():
     import sys
@@ -30,14 +40,11 @@ def user_story():
         for article in articles:
             wf = wpdb.front.Fetcher(property_file_path, article, 'en')
             articles_xml.append(wf.xml)
-            #wf.log('log/log.txt')
 
         articles_result = []
         for article_xml in articles_xml:
             cr = wpdb.middle.Cruncher(userstory3_crunches, article_xml)
             articles_result.append(cr.result)
-
-        print articles_result
 
     except Exception, e:
             print str(e)
