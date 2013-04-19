@@ -1,6 +1,9 @@
 """ WPDB Debug facilities
     Some of these things should probably be moved into other modules when appropriate.
 """
+import bs4
+from bs4 import BeautifulSoup
+import csv
 
 # 
 # Created for User Story #1
@@ -47,8 +50,6 @@ def xml_to_file(xml, file_path):
     
 # Created for User Story #2
 def dummy_xml_to_csv(xml):
-    from bs4 import BeautifulSoup
-    import csv
 
     soup = BeautifulSoup(xml)
     print soup.prettify()
