@@ -40,12 +40,17 @@ def user_story():
         for article in articles:
             wf = wpdb.front.Fetcher(property_file_path, article, 'en')
             articles_xml.append(wf.xml)
+            print wf.soup.prettify()
+            print "\n"
+
+
 
         articles_result = []
-        for article_xml in articles_xml:
-            cr = wpdb.middle.Cruncher(userstory3_crunches, article_xml)
-            articles_result.append(cr.result)
+        #for article_xml in articles_xml:
+        #    cr = wpdb.middle.Cruncher(userstory3_crunches, article_xml)
+        #    articles_result.append(cr.result)
 
+        #print articles_result
     except Exception, e:
             print str(e)
             return False

@@ -1,3 +1,4 @@
+import xml.dom.minidom as minidom
 import merge_xml
 import csv
 import urllib
@@ -102,17 +103,35 @@ class Fetcher(object):
         """
         Post builds a complete xml including all data that must be 
         acquired via continue queries.
-        """
-        working_xml = urllib.urlopen(self.url).read()
+        """ 
+        reference_xml = urllib.urlopen(self.url).read()
+        
+        while (self._has_continue_queries(reference_xml)):
 
-        while (self._has_continue_queries(working_xml)):
-            new_xml = urllib.urlopen(self._continue_url(working_xml)).read()
-            wang_xml = working_xml
-            merge_xml.xml_merge(working_xml, new_xml)
-            if (working_xml == wang_xml or working_xml ==new_xml):
-                print "borked"
+            new_xml = urllib.urlopen(self._continue_url(reference_xml)).read()
 
-        self.xml = working_xml
+            # remove continue query so it doesn't stack.
+            # I think this forces it to be an html document.
+            my_soup = BeautifulSoup(reference_xml, 'lxml')
+            qc_tag = my_soup.find('query-continue')
+            qc_tag.extract()
+            reference_xml = str(my_soup)
+
+            if self._has_continue_queries(reference_xml):
+                import sys
+                print "ouch!"
+                sys.exit()
+
+            reference_elm = minidom.parseString(reference_xml)
+            subject_elm = minidom.parseString(new_xml)
+
+            ref_root, subject_root = reference_elm.documentElement, subject_elm.documentElement
+
+            merge_xml.xml_merge(ref_root, subject_root)
+
+            reference_xml = str(reference_elm.toxml(encoding='utf-8'))
+
+        self.xml = reference_xml
 
     def log(self, file_path=None):
         """
