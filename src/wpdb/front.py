@@ -89,15 +89,12 @@ class Fetcher(object):
             
         return modified_url
      
-    def _has_continue_queries(self,xml):
+    def _has_continue_queries(self, xml):
         """
-        Use regex to see if an xml string contains a continue query
+        Check the xml as string, for the substring <query-continue> to detect
+        if there there will be further input
         """
-        pattern = r'<query-continue>'
-        prog = re.compile(pattern, flags=re.DOTALL)
-        mo = prog.search(xml)
-        if mo is None: return False 
-        else: return True
+        return r'<query-continue>' in xml
     
     def _post(self):
         """
@@ -108,27 +105,29 @@ class Fetcher(object):
         
         while (self._has_continue_queries(reference_xml)):
  
+            #It seems that the following jobs must be done on the xml files
+            #before they are merged:
+            #  The values of the query-continue must be extracted
+            #  The query-continue elements must be removed from the reference
+
+            #Extracting the url for the next query, then reading the data
             new_xml = urllib.urlopen(self._continue_url(reference_xml)).read()
- 
-            # remove continue query so it doesn't stack.
-            # I think this forces it to be an html document.
-            my_soup = BeautifulSoup(reference_xml, 'lxml')
-            qc_tag = my_soup.find('query-continue')
-            qc_tag.extract()
-            reference_xml = str(my_soup)
- 
-            if self._has_continue_queries(reference_xml):
-                import sys
-                print "ouch!"
-                sys.exit()
- 
+
+            #Create lxml structures for each: reference and new
             reference_elm =lxml.etree.fromstring(reference_xml)
             subject_elm = lxml.etree.fromstring(new_xml)
- 
+
+            #Remove the query-continue from the reference
+            query_continue = reference_elm.find('query-continue')
+            query_continue.getparent().remove(query_continue)
+
+            #Merge the xml; nothing has been coereced to html
             merge_xml.xml_merge(reference_elm, subject_elm)
  
+            #Pass the merged lxml tree back as a string as reference_xml
             reference_xml = str(lxml.etree.tostring(reference_elm, pretty_print=False, encoding='utf-8'))
- 
+
+        #Set self.xml to the final merged xml
         self.xml = reference_xml
  
     def log(self, file_path=None):
