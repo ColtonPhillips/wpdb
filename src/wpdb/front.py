@@ -3,7 +3,6 @@ import merge_xml
 import csv
 import urllib
 import debug
-import re
 from bs4 import BeautifulSoup
  
 class Fetcher(object):
@@ -60,14 +59,9 @@ class Fetcher(object):
         """
         Builds url field before query Wikimedia. 
         """
-        self.url = ""
-        self.url += "http://"
-        self.url += self.language 
-        self.url += ".wikipedia.org/w/api.php?"
-        self.url += "action=query"
-        self.url += "&format=xml"
-        self.url += "&titles=" + self.title
- 
+        base_url = "http://{0}.wikipedia.org/w/api.php?action=query&format=xml&titles={1}"
+        self.url = base_url.format(self.language, self.title)
+        
         for prop in self.properties:
             self.url += "&" + prop
  
