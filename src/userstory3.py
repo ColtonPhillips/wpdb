@@ -9,6 +9,7 @@ QUEST = """I want to use your wpdb module to create a csv file filled with 8 exp
 of articles. The output must be formatted in a csv file for use with Stata software. """
 
 import wpdb
+import traceback
 
 def xml_len(data):
     xml = data['xml']
@@ -33,28 +34,26 @@ def parse_args():
     return (sys.argv[1], sys.argv[2])
  
 def user_story():
-    try:        
-        articles_xml = []
-        articles_file_path, property_file_path = parse_args()
-        articles = wpdb.csv_file_to_list(articles_file_path)
-        for article in articles:
+    articles_xml = []
+    articles_file_path, property_file_path = parse_args()
+    articles = wpdb.csv_file_to_list(articles_file_path)
+    for article in articles:
+        try:
             wf = wpdb.front.Fetcher(property_file_path, article, 'en')
             articles_xml.append(wf.xml)
+        except:
+            traceback.print_exc()
+            print('Error encountered during fetching article! Quitting...')
+            return False
+        else:
             print wf.soup.prettify()
             print "\n"
 
-
-
-        articles_result = []
+        #articles_result = []
         #for article_xml in articles_xml:
         #    cr = wpdb.middle.Cruncher(userstory3_crunches, article_xml)
         #    articles_result.append(cr.result)
-
         #print articles_result
-    except Exception, e:
-            print str(e)
-            return False
-    
     return True
 
 def main():
