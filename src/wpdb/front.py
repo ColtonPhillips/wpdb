@@ -1,17 +1,17 @@
-import xml.dom.minidom as minidom
+import lxml.etree
 import merge_xml
 import csv
 import urllib
 import debug
 import re
 from bs4 import BeautifulSoup
-
+ 
 class Fetcher(object):
     """
     A Fetcher makes getting XML data from Wikipedia. It builds a URL based on
     customizable CSV property files and handles the continue query process.
     """
-
+ 
     def __init__(self, props_file_path, title=None, language='en'):
         
         # Input
@@ -20,17 +20,17 @@ class Fetcher(object):
         self.url = None
         self.properties = None
         self.continue_attrs = dict()
-
+ 
         # Output
         self.xml = None
         self.soup = None
-
+ 
         # Fetch
         self.construct_property_rows(props_file_path)
         self._build_url()
         self._post()
         self._build_soup()
-
+ 
     def construct_property_rows(self, props_file_path):
         """
         From a formatted csv file, set properties list.
@@ -53,9 +53,9 @@ class Fetcher(object):
                 row_string = '|'.join(row)
                 row_string = row_string.replace(' ', '')
                 row_string = row_string.replace('|', '=', 1)
-
+ 
                 self.properties.append(row_string)
-
+ 
     def _build_url(self):
         """
         Builds url field before query Wikimedia. 
@@ -67,10 +67,10 @@ class Fetcher(object):
         self.url += "action=query"
         self.url += "&format=xml"
         self.url += "&titles=" + self.title
-
+ 
         for prop in self.properties:
             self.url += "&" + prop
-
+ 
     def _continue_url(self, xml):
         """
         Results from wikimedia may contain continue query codes that must be placed inside of the url
@@ -82,7 +82,7 @@ class Fetcher(object):
             for content in query_continue.contents:
                 for key,value in content.attrs.iteritems():
                     self.continue_attrs[key] = value
-
+ 
         modified_url = self.url
         for key,value in self.continue_attrs.iteritems():
             modified_url += str('&' + key.encode('ascii', 'ignore') + '=' + value.encode('ascii', 'ignore'))
@@ -107,32 +107,30 @@ class Fetcher(object):
         reference_xml = urllib.urlopen(self.url).read()
         
         while (self._has_continue_queries(reference_xml)):
-
+ 
             new_xml = urllib.urlopen(self._continue_url(reference_xml)).read()
-
+ 
             # remove continue query so it doesn't stack.
             # I think this forces it to be an html document.
             my_soup = BeautifulSoup(reference_xml, 'lxml')
             qc_tag = my_soup.find('query-continue')
             qc_tag.extract()
             reference_xml = str(my_soup)
-
+ 
             if self._has_continue_queries(reference_xml):
                 import sys
                 print "ouch!"
                 sys.exit()
-
-            reference_elm = minidom.parseString(reference_xml)
-            subject_elm = minidom.parseString(new_xml)
-
-            ref_root, subject_root = reference_elm.documentElement, subject_elm.documentElement
-
-            merge_xml.xml_merge(ref_root, subject_root)
-
-            reference_xml = str(reference_elm.toxml(encoding='utf-8'))
-
+ 
+            reference_elm =lxml.etree.fromstring(reference_xml)
+            subject_elm = lxml.etree.fromstring(new_xml)
+ 
+            merge_xml.xml_merge(reference_elm, subject_elm)
+ 
+            reference_xml = str(lxml.etree.tostring(reference_elm, pretty_print=False, encoding='utf-8'))
+ 
         self.xml = reference_xml
-
+ 
     def log(self, file_path=None):
         """
         Log Fetcher information. If no file_path is given, just print it.
@@ -152,7 +150,7 @@ class Fetcher(object):
         else:
             with open(file_path, 'w') as file:
                 file.write(out_string)
-
-
+ 
+ 
     def _build_soup(self):
         self.soup = BeautifulSoup(self.xml, 'lxml')
