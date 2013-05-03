@@ -1,15 +1,22 @@
 """
 A general purpose utility for merging XML files. Ignorant of XML schema and namespaces.
  
-Written for use with Python2, using xml.dom.minidom
+Written for use with Python2, using lxml
  
 Author: Paul Barton - SavinaRoja
 """
  
-import xml.dom.minidom as minidom
+import lxml.etree
 from hashlib import sha1
  
-def element_hash(self):
+def text_hash(text):
+    """
+    Hashes text, for self.text and self.tail.
+    """
+    hash_string = u'{0}'.format(text)
+    return int(sha1(hash_string.encode('utf-8')).hexdigest(), 16)
+ 
+def element_hash(element):
     """
     Provides a means of hashing an element. This method only accounts for
     tag names and attribute-value pairs.
@@ -18,34 +25,33 @@ def element_hash(self):
     attribute name) attribute-value pairs. It then converts this to an integer
     for hash comparison.
     """
-    hash_string = u'{0}'.format(self.tagName)
-    attribute_keys = sorted(self.attributes.keys())
+    hash_string = u'{0}'.format(element.tag)
+    attribute_keys = sorted(element.attrib.keys())
     for attr_key in attribute_keys:
-        hash_string += u'{0}{1}'.format(attr_key, self.attributes[attr_key].value)
+        hash_string += u'{0}{1}'.format(attr_key, element.attrib[attr_key])
     return int(sha1(hash_string.encode('utf-8')).hexdigest(), 16)
  
-def text_hash(self):
-    """
-    Provides a means of hashing a Text node. It just hashes the text data.
-    """
-    hash_string = u'{0}'.format(self.data)
-    return int(sha1(hash_string.encode('utf-8')).hexdigest(), 16)
- 
-def element_hash_children(self):
+def hashed_children(element):
     """
     Creates a dictionary of child elements; the element serving as value and
     the hash serving as the key.
     """
     child_dict = {}
-    for child in self.childNodes:
-        child_dict[child.custom_hash()] = child
+    if element.text:
+        child_dict[text_hash(element.text)] = element.text
+    if element.tail:
+        child_dict[text_hash(element.tail)] = element.tail
+    for child in element.getchildren():
+        child_dict[element_hash(child)] = child
     return child_dict
  
-#Monkey patching some methods into xml.dom.minidom Classes
-minidom.Element.custom_hash = element_hash
-minidom.Element.hashedChildNodes = element_hash_children
-minidom.Text.custom_hash = text_hash
-minidom.Text.hashedChildNodes = {}
+ 
+def get_list_with_text(element):
+    try:
+        return [element.text, element.tail] + list(element)
+    except AttributeError:  # Receives a string
+        return []
+        
  
 def xml_merge(reference_element, subject_element):
     """
@@ -53,11 +59,28 @@ def xml_merge(reference_element, subject_element):
     subject tree Elements into the reference tree if the subject Element is
     unique.
     """
-    for subject_child in subject_element.childNodes:
-        subject_hash = subject_child.custom_hash()
-        if subject_hash in reference_element.hashedChildNodes():
-            reference_child = reference_element.hashedChildNodes()[subject_hash]
+    for subject_child in get_list_with_text(subject_element):
+        #First get the relevant hash
+        if isinstance(subject_child, lxml.etree._Element):  # Element
+            text = False
+            subject_hash = element_hash(subject_child)
+        elif subject_child is None:  # An empty text or tail
+            continue
+        else:  # Nonempty text or tail
+            text = True
+            subject_hash = text_hash(subject_child)
+ 
+        #Then look to see if it is already in the target's hashed children
+        if subject_hash in hashed_children(reference_element):
+            reference_child = hashed_children(reference_element)[subject_hash]
             xml_merge(reference_child, subject_child)
+        #If it is not, append it
         else:
-            reference_element.appendChild(subject_child.cloneNode(deep=True))
+            if text:  #Append all text to the tail
+                try:
+                    reference_element.tail += subject_child
+                except TypeError:  # Empty tail
+                    reference_element.tail = subject_child
+            else:  #Append all elements to the end of the children
+                reference_element.append(subject_child)
     return
