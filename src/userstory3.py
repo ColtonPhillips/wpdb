@@ -46,7 +46,9 @@ def user_story():
             print('Error encountered during fetching article! Quitting...')
             return False
         else:
-            print wf.soup.prettify()
+            print wf.url
+            print wf.title
+            print wf.soup.prettify(encoding='UTF-8')
             print "\n"
 
         #articles_result = []
