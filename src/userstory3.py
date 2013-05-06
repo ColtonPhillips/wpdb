@@ -10,14 +10,15 @@ of articles. The output must be formatted in a csv file for use with Stata softw
 
 import wpdb
 import traceback
+import lxml.etree
 
 def xml_len(data):
     xml = data['xml']
     return "XML length: " + str(len(xml))
 
-def soup_len(data):
-    soup = data['soup']
-    return "Soup length: " + str(len(soup))
+def tree_len(data):
+    tree = data['tree']
+    return "Tree length: " + str(len(tree))
 
 def daily_views_last_month(data):
     import urllib, re
@@ -27,7 +28,7 @@ def daily_views_last_month(data):
     match_object = prog.search(website)
     return "Views in last month: " + str(match_object.group(0)) 
 
-userstory3_crunches = [soup_len,xml_len, daily_views_last_month]
+userstory3_crunches = [tree_len, xml_len, daily_views_last_month]
 
 def parse_args():
     import sys

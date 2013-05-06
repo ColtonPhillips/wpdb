@@ -3,7 +3,6 @@ import merge_xml
 import csv
 import urllib
 import debug
-#from bs4 import BeautifulSoup
  
 class Fetcher(object):
     """
@@ -73,17 +72,11 @@ class Fetcher(object):
         containing the continue queries
         """
         tree = lxml.etree.fromstring(xml)
-        for query_continue in tree.findall('query_continue'):
+        for query_continue in tree.findall('query-continue'):
             #For each subelement, get each attribute
             for query_subelement in query_continue:
                 for key in query_subelement.attrib.keys():
                     self.continue_attrs[key] = query_subelement.attrib[key]
-            
-        #soup = BeautifulSoup(xml, 'lxml')
-        #for query_continue in soup.find_all('query-continue'):
-        #    for content in query_continue.contents:
-        #        for key,value in content.attrs.iteritems():
-        #            self.continue_attrs[key] = value
  
         modified_url = self.url
         for key,value in self.continue_attrs.iteritems():
@@ -149,5 +142,3 @@ class Fetcher(object):
  
     def _build_tree(self):
         self.tree = lxml.etree.fromstring(self.xml)
-    #def _build_soup(self):
-    #    self.soup = BeautifulSoup(self.xml, 'lxml')

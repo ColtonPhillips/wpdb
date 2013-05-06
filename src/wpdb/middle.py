@@ -1,4 +1,4 @@
-from bs4 import BeautifulSoup
+import lxml.etree
 import csv
 
 class Cruncher(object):
@@ -9,14 +9,14 @@ class Cruncher(object):
 	"""
 	def __init__(self, crunches=[], xml=None):
 		self.xml = xml
-		self.soup = BeautifulSoup(xml,'lxml')
+		self.tree = lxml.etree.fromstring(self.xml)
 		self.crunches = crunches
 		self.result = []
 
 		self.crunch_data = {
 				'xml': self.xml,
-				'soup': self.soup,
-				'title': self.soup.find('page')['title']
+				'tree': self.tree,
+				'title': self.tree.find('query/pages/page').attrib['title']
 		}
 
 		self.crunch()
