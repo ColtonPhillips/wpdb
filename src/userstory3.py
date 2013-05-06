@@ -51,11 +51,18 @@ def user_story():
             print wf.soup.prettify(encoding='UTF-8')
             print "\n"
 
-        #articles_result = []
-        #for article_xml in articles_xml:
-        #    cr = wpdb.middle.Cruncher(userstory3_crunches, article_xml)
-        #    articles_result.append(cr.result)
-        #print articles_result
+        articles_result = []
+        for article_xml in articles_xml:
+            cr = wpdb.middle.Cruncher(userstory3_crunches, article_xml)
+            articles_result.append(cr.result)
+
+        with open('out/out.csv', 'wb') as csv_file:
+            import csv
+            spamwriter = csv.writer(csv_file, delimiter=',',
+                            quotechar='"', quoting=csv.QUOTE_MINIMAL)
+            for result in articles_result:
+                spamwriter.writerow(['name'] + result)
+
     return True
 
 def main():
