@@ -3,7 +3,7 @@ import merge_xml
 import csv
 import urllib
 import debug
-from bs4 import BeautifulSoup
+#from bs4 import BeautifulSoup
  
 class Fetcher(object):
     """
@@ -28,7 +28,8 @@ class Fetcher(object):
         self.construct_property_rows(props_file_path)
         self._build_url()
         self._post()
-        self._build_soup()
+        self._build_tree()
+        #self._build_soup()
  
     def construct_property_rows(self, props_file_path):
         """
@@ -71,11 +72,18 @@ class Fetcher(object):
         and re-queried in order to get more fields for lists. This method will return a modified url
         containing the continue queries
         """
-        soup = BeautifulSoup(xml, 'lxml')
-        for query_continue in soup.find_all('query-continue'):
-            for content in query_continue.contents:
-                for key,value in content.attrs.iteritems():
-                    self.continue_attrs[key] = value
+        tree = lxml.etree.fromstring(xml)
+        for query_continue in tree.findall('query_continue'):
+            #For each subelement, get each attribute
+            for query_subelement in query_continue:
+                for key in query_subelement.attrib.keys():
+                    self.continue_attrs[key] = query_subelement.attrib[key]
+            
+        #soup = BeautifulSoup(xml, 'lxml')
+        #for query_continue in soup.find_all('query-continue'):
+        #    for content in query_continue.contents:
+        #        for key,value in content.attrs.iteritems():
+        #            self.continue_attrs[key] = value
  
         modified_url = self.url
         for key,value in self.continue_attrs.iteritems():
@@ -139,5 +147,7 @@ class Fetcher(object):
                 file.write(out_string)
  
  
-    def _build_soup(self):
-        self.soup = BeautifulSoup(self.xml, 'lxml')
+    def _build_tree(self):
+        self.tree = lxml.etree.fromstring(self.xml)
+    #def _build_soup(self):
+    #    self.soup = BeautifulSoup(self.xml, 'lxml')

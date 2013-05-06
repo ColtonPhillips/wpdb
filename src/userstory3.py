@@ -46,10 +46,10 @@ def user_story():
             print('Error encountered during fetching article! Quitting...')
             return False
         else:
-            print wf.url
-            print wf.title
-            print wf.soup.prettify(encoding='UTF-8')
-            print "\n"
+            print(wf.url)
+            print(wf.title)
+            print(lxml.etree.tostring(wf.tree, pretty_print=True, encoding='UTF-8'))
+            print('\n')
 
         articles_result = []
         for article_xml in articles_xml:
