@@ -98,12 +98,6 @@ class Fetcher(object):
         reference_xml = urllib.urlopen(self.url).read()
         
         while (self._has_continue_queries(reference_xml)):
- 
-            #It seems that the following jobs must be done on the xml files
-            #before they are merged:
-            #  The values of the query-continue must be extracted
-            #  The query-continue elements must be removed from the reference
-
             #Extracting the url for the next query, then reading the data
             new_xml = urllib.urlopen(self._continue_url(reference_xml)).read()
 
