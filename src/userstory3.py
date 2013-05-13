@@ -13,11 +13,11 @@ import traceback
 
 def xml_len(data):
     xml = data['xml']
-    return "XML length: " + str(len(xml))
+    return str(len(xml))
 
 def soup_len(data):
     soup = data['soup']
-    return "Soup length: " + str(len(soup))
+    return str(len(soup))
 
 def daily_views_last_month(data):
     import urllib, re
@@ -25,7 +25,7 @@ def daily_views_last_month(data):
     pattern = r'(?<=viewed )\d*'
     prog = re.compile(pattern)
     match_object = prog.search(website)
-    return "Views in last month: " + str(match_object.group(0)) 
+    return str(match_object.group(0)) 
 
 userstory3_crunches = [soup_len,xml_len, daily_views_last_month]
 
@@ -60,8 +60,11 @@ def user_story():
             import csv
             spamwriter = csv.writer(csv_file, delimiter=',',
                             quotechar='"', quoting=csv.QUOTE_MINIMAL)
-            for result in articles_result:
-                spamwriter.writerow(['name'] + result)
+            spamwriter.writerow(['Article','Soup length','xml length', 'daily views last month'])
+            for result, article in zip(articles_result, articles):
+                print result, article
+                # Best way to relate the result to the article name? - CP
+                spamwriter.writerow([article] + result)
 
     return True
 
