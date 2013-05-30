@@ -1,6 +1,6 @@
 from pprint import pprint as pp
 
-# This is a user story hack jam by Colton Phillips for Pascal Courty.
+# This is a user story jam by Colton Phillips for Pascal Courty.
 # The location is Colton's house
 # Apr 10 2013
 
@@ -11,13 +11,9 @@ of articles. The output must be formatted in a csv file for use with Stata softw
 import wpdb
 import traceback
 
-def xml_len(data):
-    xml = data['xml']
-    return str(len(xml))
-
-def soup_len(data):
+def num_images(data):
     soup = data['soup']
-    return str(len(soup))
+    return str(len(soup.find('images')))
 
 def daily_views_last_month(data):
     import urllib, re
@@ -26,8 +22,30 @@ def daily_views_last_month(data):
     prog = re.compile(pattern)
     match_object = prog.search(website)
     return str(match_object.group(0)) 
+    
+def byte_count(data):
+    soup = data['soup']
+    return str(soup.find('page')['length'])
+ 
+def featured(data):
+    soup = data['soup']
+    for element in soup.find('categories'):
+        if element['title'] == 'Category:Featured articles':
+            return 'true'
+    return 'false'
+    
+def good_article(data):
+    soup = data['soup']
+    for element in soup.find('categories'):
+        if element['title'] == 'Category:Good articles':
+            return 'true'
+    return 'false'
+    
+def article_name(data):
+    return data['title']
 
-userstory3_crunches = [soup_len,xml_len, daily_views_last_month]
+userstory3_crunches = [article_name, num_images, daily_views_last_month, byte_count, featured, good_article]
+crunch_titles = ['Article','number of images', 'daily views last month', 'byte count','featured', 'good article']
 
 def parse_args():
     import sys
@@ -60,7 +78,7 @@ def user_story():
             import csv
             spamwriter = csv.writer(csv_file, delimiter=',',
                             quotechar='"', quoting=csv.QUOTE_MINIMAL)
-            spamwriter.writerow(['Article','Soup length','xml length', 'daily views last month'])
+            spamwriter.writerow(crunch_titles)
             for result, article in zip(articles_result, articles):
                 print result, article
                 # Best way to relate the result to the article name? - CP
