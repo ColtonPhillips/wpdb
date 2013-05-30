@@ -13,7 +13,15 @@ import traceback
 
 def num_images(data):
     soup = data['soup']
+    if type(soup.find('images')) is type(soup.NoneType):
+        return '0'
     return str(len(soup.find('images')))
+
+def ext_links(data):
+    soup = data['soup']
+    if type(soup.find('extlinks')) is type(soup.NoneType):
+        return '0'
+    return str(len(soup.find('extlinks')))
 
 def daily_views_last_month(data):
     import urllib, re
@@ -44,8 +52,8 @@ def good_article(data):
 def article_name(data):
     return data['title']
 
-userstory3_crunches = [article_name, num_images, daily_views_last_month, byte_count, featured, good_article]
-crunch_titles = ['Article','number of images', 'daily views last month', 'byte count','featured', 'good article']
+userstory3_crunches = [article_name, num_images, ext_links, daily_views_last_month, byte_count, featured, good_article]
+crunch_titles = ['Article','number of images', 'external links', 'daily views last month', 'byte count','featured', 'good article']
 
 def parse_args():
     import sys
